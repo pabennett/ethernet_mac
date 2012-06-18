@@ -1,0 +1,40 @@
+CONFIG VCCAUX=3.3;
+
+############################################################################	
+# Silicon Labs CP2102 USB-to-UART Bridge Chip
+############################################################################	
+NET USB_RS232_RXD     LOC = R7  | IOSTANDARD = LVCMOS33;               # "USB_RS232_RXD"
+NET USB_RS232_TXD     LOC = T7  | IOSTANDARD = LVCMOS33;               # "USB_RS232_TXD"
+    
+    
+NET USER_RESET      LOC = V4  | IOSTANDARD = LVCMOS33 | PULLDOWN;    # "USER_RESET_N"
+NET USER_RESET      TIG;
+
+NET CLOCK_Y3          LOC = C10 | IOSTANDARD = LVCMOS33;               # "CLOCK_Y3"
+NET CLOCK_Y3 TNM_NET = CLOCK_Y3;
+TIMESPEC TS_CLOCK_Y3 = PERIOD CLOCK_Y3 100000 kHz;
+
+############################################################################	
+# National Semiconductor DP83848J 10/100 Ethernet PHY			
+############################################################################	
+### Pull-ups on RXD are necessary to set the PHY AD to 11110b.  ###
+###   Must keep the PHY from defaulting to PHY AD = 00000b      ###
+###   because this is Isolate Mode (Strap Options In Datasheet) ###
+#NET ETH_COL           LOC = M18 | IOSTANDARD = LVCMOS33 | PULLDOWN;    # "ETH_COL"
+#NET ETH_CRS           LOC = N17 | IOSTANDARD = LVCMOS33 | PULLDOWN;    # "ETH_CRS"
+NET ETH_MDC           LOC = M16 | IOSTANDARD = LVCMOS33;               # "ETH_MDC"
+#NET ETH_MDIO          LOC = L18 | IOSTANDARD = LVCMOS33;               # "ETH_MDIO"
+#NET ETH_RESET_n       LOC = T18 | IOSTANDARD = LVCMOS33 | TIG;         # "ETH_RESET#"
+NET ETH_RX_CLK        LOC = L15 | IOSTANDARD = LVCMOS33;               # "ETH_RX_CLK"
+NET ETH_RX_D0         LOC = T17 | IOSTANDARD = LVCMOS33 | PULLUP;      # "ETH_RX_D0"
+NET ETH_RX_D1         LOC = N16 | IOSTANDARD = LVCMOS33 | PULLUP;      # "ETH_RX_D1"
+NET ETH_RX_D2         LOC = N15 | IOSTANDARD = LVCMOS33 | PULLUP;      # "ETH_RX_D2"
+NET ETH_RX_D3         LOC = P18 | IOSTANDARD = LVCMOS33 | PULLUP;      # "ETH_RX_D3"
+NET ETH_RX_DV         LOC = P17 | IOSTANDARD = LVCMOS33;               # "ETH_RX_DV"
+#NET ETH_RX_ER         LOC = N18 | IOSTANDARD = LVCMOS33;               # "ETH_RX_ER"
+#NET ETH_TX_CLK        LOC = H17 | IOSTANDARD = LVCMOS33;               # "ETH_TX_CLK"
+#NET ETH_TX_D0         LOC = K18 | IOSTANDARD = LVCMOS33;               # "ETH_TX_D0"
+#NET ETH_TX_D1         LOC = K17 | IOSTANDARD = LVCMOS33;               # "ETH_TX_D1"
+#NET ETH_TX_D2         LOC = J18 | IOSTANDARD = LVCMOS33;               # "ETH_TX_D2"
+#NET ETH_TX_D3         LOC = J16 | IOSTANDARD = LVCMOS33;               # "ETH_TX_D3"
+#NET ETH_TX_EN         LOC = L17 | IOSTANDARD = LVCMOS33;               # "ETH_TX_EN"

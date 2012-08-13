@@ -84,7 +84,7 @@ architecture RTL of network_send is
                           total_length(7 downto 0),
                           identification(15 downto 8),
                           identification(7 downto 0),
-                          flags & fragment_offset(13 downto 8),
+                          flags & fragment_offset(13 downto 9),
                           fragment_offset(7 downto 0),
                           time_to_live,
                           protocol,

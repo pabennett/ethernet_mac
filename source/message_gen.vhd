@@ -454,19 +454,6 @@ begin
     RAM_READ_ADDRESS        => packet_ram_read_address
   );
 
-  -- Controls access to the RAM
-  -- Need a better implementation
-  RAM_CONTROL : process (CLOCK)
-  begin
-    if rising_edge (CLOCK) then
-      if RESET = '1' then
-
-      else
-
-      end if;
-    end if;
-  end process RAM_CONTROL;
-
   INTERNET_SEND : NETWORK_SEND
   port map
   (

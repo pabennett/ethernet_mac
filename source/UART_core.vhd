@@ -1,18 +1,34 @@
---------------------------------------------------------------------------------
--- UART CORE    
--- Implements a universal asynchronous receiver transmitter with parameterisable
--- BAUD rate. This was tested on a Spartan 6 LX9 connected to a Silicon Labs
--- CP2102 USB-UART Bridge.
---           
--- @author         Peter A Bennett
--- @copyright      (c) 2012 Peter A Bennett
--- @version        $Rev: 2 $
--- @lastrevision   $Date: 2012-03-11 15:19:25 +0000 (Sun, 11 Mar 2012) $
--- @license        LGPL      
--- @email          pab850@googlemail.com
--- @contact        www.bytebash.com
---
---------------------------------------------------------------------------------
+ -- +-Module--------------------------------------------+
+ -- |                   UART CORE                       |
+ -- +-Author--------------------------------------------+
+ -- |                                                   |
+ -- | + Peter Bennett                                   |
+ -- | + Email : pab850@googlemail.com                   |
+ -- | + Website : www.bytebash.com                      |
+ -- |                                                   |
+ -- +-Information---------------------------------------+
+ -- |                                                   |
+ -- | + Implements a universal asynchronous receiver    |
+ -- | + transmitter with parameterisable BAUD rate.     |
+ -- |                                                   |
+ -- | + This was tested on a Spartan 6 LX9 connected to |
+ -- | + a Silicon Labs Cp2102 USB-UART Bridge           |
+ -- |                                                   |
+ -- +-IO Description------------------------------------+
+ -- |                                                   |
+ -- | + CLOCK100M           : IN - 100MHz Clock         |
+ -- | + RESET               : IN - Reset (Active High)  |
+ -- | + DATA_STREAM_IN      : IN - 8 Bit TX Data        |
+ -- | + DATA_STREAM_IN_STB  : IN - TX Data Ready        |
+ -- | + DATA_STREAM_IN_ACK  : OUT - Active 1 Clk Only   | 
+ -- | + DATA_STREAM_OUT     : OUT - RX Data Out         |
+ -- | + DATA_STREAM_OUT_STB : OUT - RX Data Ready       |
+ -- | + DATA_STREAM_OUT_ACK : IN - Active 1 Clk Only    |
+ -- | + TX                  : OUT - UART TX             |
+ -- | + RX                  : IN - UART RX              | 
+ -- |                                                   |
+ -- +---------------------------------------------------+
+
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -38,24 +54,16 @@ entity UART_core is
 end UART_core;
 
 architecture RTL of UART_core is
-    -- Functions
-    function log2(A: integer) return integer is
-    begin
-      for I in 1 to 30 loop  -- Works for up to 32 bit integers
-        if(2**I > A) then return(I-1);  end if;
-      end loop;
-      return(30);
-    end;
     
     -- Baud Rate Generation
     constant c_tx_divider_val : integer := CLOCK_FREQUENCY / BAUD_RATE;
     constant c_rx_divider_val : integer := CLOCK_FREQUENCY / (BAUD_RATE * 16);
-    constant tx_divider     :   unsigned (log2(c_tx_divider_val) downto 0) := to_unsigned(c_tx_divider_val,log2(c_tx_divider_val) + 1);
-    constant rx_divider     :   unsigned (log2(c_rx_divider_val) downto 0) := to_unsigned(c_rx_divider_val,log2(c_rx_divider_val) + 1);
-    signal baud_counter             :   unsigned (tx_divider'length - 1 downto 0) := (others => '0');   
+
+    signal baud_counter             :   integer;   
     signal baud_tick                :   std_logic := '0';
-    signal oversample_baud_counter  :   unsigned (rx_divider'length - 1 downto 0) := (others => '0');   
+    signal oversample_baud_counter  :   integer;
     signal oversample_baud_tick     :   std_logic := '0';
+
     -- Transmitter Signals
     type    uart_tx_states is (idle, wait_for_tick, send_start_bit, transmit_data, send_stop_bit);
     signal  uart_tx_state       : uart_tx_states := idle;
@@ -88,11 +96,11 @@ begin
     begin
         if rising_edge (CLOCK100M) then
             if RESET = '1' then
-                baud_counter     <= (others => '0');
+                baud_counter     <= 0;
                 baud_tick        <= '0';    
             else
-                if baud_counter = tx_divider then
-                    baud_counter <= (others => '0');
+                if baud_counter = c_tx_divider_val then
+                    baud_counter <= 0;
                     baud_tick    <= '1';
                 else
                     baud_counter <= baud_counter + 1;
@@ -162,11 +170,11 @@ begin
     begin
         if rising_edge (CLOCK100M) then
             if RESET = '1' then
-                oversample_baud_counter     <= (others => '0');
+                oversample_baud_counter     <= 0;
                 oversample_baud_tick        <= '0';    
             else
-                if oversample_baud_counter = rx_divider then
-                    oversample_baud_counter <= (others => '0');
+                if oversample_baud_counter = c_rx_divider_val then
+                    oversample_baud_counter <= 0;
                     oversample_baud_tick    <= '1';
                 else
                     oversample_baud_counter <= oversample_baud_counter + 1;

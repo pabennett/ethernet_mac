@@ -1,7 +1,0 @@
-vhdl work ../source/FIFO.vhd
-vhdl work ../source/UART.vhd
-vhdl work ../source/ethernet_receive.vhd
-vhdl work ../source/internet_receive.vhd
-vhdl work ../source/UART_core.vhd
-vhdl work ../source/CRC.vhd
-vhdl work ../source/message_gen.vhd

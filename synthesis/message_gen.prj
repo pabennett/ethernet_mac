@@ -1,0 +1,11 @@
+vhdl work ../source/ethernet_constants.vhd
+vhdl work ../source/FIFO.vhd
+vhdl work ../source/UART.vhd
+vhdl work ../source/UART_core.vhd
+vhdl work ../source/CRC.vhd
+vhdl work ../source/ethernet_receive.vhd
+vhdl work ../source/internet_receive.vhd
+vhdl work ../source/network_send.vhd
+vhdl work ../source/RAM.vhd
+vhdl work ../source/protocol_ICMP.vhd
+vhdl work ../source/message_gen.vhd
